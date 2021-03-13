@@ -34,8 +34,7 @@
 #include "thread.h"
 #include "util.h"
 #include "wait_for.h"
-#include <stdio.h>
-#include <math.h>
+// #include <stdio.h>
+// #include <math.h>
 
 #endif /* INCLUDE_WOMBAT_WOMBAT_H_ */
-
