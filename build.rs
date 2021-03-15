@@ -2,7 +2,7 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    println!("cargo:rustc-link-lib=botball");
+    println!("cargo:rustc-link-lib=kipr");
     println!("cargo:rerun-if-changed=include/wrapper.h");
 
     let ignored_macros = IgnoreMacros(
