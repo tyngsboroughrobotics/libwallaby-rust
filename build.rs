@@ -1,9 +1,24 @@
-use std::env;
-use std::path::PathBuf;
+use std::{
+    env,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 fn main() {
+    assert!(Command::new("bash")
+        .args(&["build.sh"])
+        .status()
+        .unwrap()
+        .success());
+
+    println!(
+        "cargo:rustc-link-search=native={}",
+        Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap())
+            .join("libwallaby/lib")
+            .to_string_lossy()
+    );
+
     println!("cargo:rustc-link-lib=kipr");
-    println!("cargo:rerun-if-changed=include/wrapper.h");
 
     let ignored_macros = IgnoreMacros(
         vec![
@@ -18,7 +33,8 @@ fn main() {
     );
 
     let bindings = bindgen::Builder::default()
-        .header("include/wrapper.h")
+        .header("libwallaby/include/kipr/botball.h")
+        .header("libwallaby/include/kipr/wombat.h")
         .parse_callbacks(Box::new(ignored_macros))
         .rustfmt_bindings(true)
         .generate()
@@ -28,6 +44,10 @@ fn main() {
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
+
+    println!("cargo:rerun-if-changed=build.sh");
+    println!("cargo:rerun-if-changed=libwallaby/include/kipr/botball.h");
+    println!("cargo:rerun-if-changed=libwallaby/include/kipr/wombat.h");
 }
 
 #[derive(Debug)]
